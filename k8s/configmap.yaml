@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: fintech
+data:
+  DB_HOST: "postgres-service"
+  DB_USER: "postgres"
+  DB_NAME: "fintech"
+  DB_PORT: "5432"

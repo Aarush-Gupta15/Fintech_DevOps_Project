@@ -1,0 +1,36 @@
+# Argo CD Application - GitOps deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fintech-app
+  namespace: argocd
+spec:
+  project: default
+
+  # Source: Git repository with K8s manifests
+  source:
+    repoURL: https://github.com/aarushgupta/fintech-devops.git
+    targetRevision: main
+    path: k8s
+
+  # Destination: EKS cluster
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fintech
+
+  # Sync Policy: Auto-sync with self-heal
+  syncPolicy:
+    automated:
+      prune: true      # Delete resources removed from Git
+      selfHeal: true   # Revert manual changes to match Git
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  # Rollback: Keep last 5 revisions
+  revisionHistoryLimit: 5

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fintech App</title>
+</head>
+<body>
+  <h1>Users</h1>
+
+  <input id="name" placeholder="Enter name" />
+  <button onclick="addUser()">Add</button>
+
+  <ul id="users"></ul>
+
+  <script>
+    const API = "http://localhost:3000/api";
+
+    async function loadUsers() {
+      const res = await fetch(API + "/users");
+      const users = await res.json();
+      const list = document.getElementById("users");
+      list.innerHTML = "";
+      users.forEach(u => {
+        const li = document.createElement("li");
+        li.textContent = u.name;
+        list.appendChild(li);
+      });
+    }
+
+    async function addUser() {
+      const name = document.getElementById("name").value;
+      await fetch(API + "/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name })
+      });
+      loadUsers();
+    }
+
+    loadUsers();
+  </script>
+</body>
+</html>
